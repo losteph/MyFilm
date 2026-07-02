@@ -120,3 +120,37 @@ header {
 .plot-box { margin: 15px 0; padding: 15px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
 .comment-box { background-color: var(--bg-color); padding: 15px; border-left: 4px solid var(--accent); }
 .tag { background-color: var(--border-color); padding: 4px 8px; border-radius: 6px; font-size: 12px; margin-right: 5px;}
+
+/* Barra di Ricerca e Ordinamento */
+.search-sort-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+#search-input, #sort-select {
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#search-input {
+    flex-grow: 1; /* Fa allargare la barra di ricerca per occupare lo spazio disponibile */
+}
+
+#search-input:focus, #sort-select:focus {
+    border-color: var(--accent);
+}
+
+/* Adattamento per dispositivi mobili */
+@media (max-width: 768px) {
+    .search-sort-container {
+        flex-direction: column;
+    }
+}
