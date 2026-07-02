@@ -6,7 +6,7 @@ Questo progetto nasce dall'esigenza di avere un backup sicuro e proprietario dei
 
 ## ✨ Funzionalità
 
-- 100% Offline e Statico: Nessuna chiamata API dal lato client. Le immagini e le trame risiedono localmente (o sul server GitHub Pages), garantendo caricamenti istantanei e nessuna dipendenza da servizi esterni.
+- 100% Offline e Statico: Nessuna chiamata API dal lato client. Le immagini e le trame risiedono localmente, garantendo caricamenti istantanei e nessuna dipendenza da servizi esterni.
 
 - Gestione Lingua e Tema: Toggle istantaneo tra Italiano e Inglese per l'interfaccia e le trame. Supporto nativo per Dark Mode e Light Mode.
 
