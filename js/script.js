@@ -1,26 +1,30 @@
 // 1. STATO DELL'APP
 let myMoviesDataset = [];
 let currentFilter = 'all';
-let currentLang = 'it'; // 'it' o 'en'
-let currentTheme = 'dark'; // 'dark' o 'light'
+let currentLang = 'it';
+let currentTheme = 'dark';
+let searchQuery = ''; // Cerca per titolo
+let currentSort = 'default'; // Ordinamento: 'default' o 'alpha'
 
-// TRADUZIONI INTERFACCIA (Rimosso il testo "Caricamento trama..." perché ora è istantaneo!)
+// TRADUZIONI INTERFACCIA
 const i18n = {
     it: {
         title: "🎬 Il Mio Cinema Locale", subtitle: "Archivio film personale e indipendente",
         all: "Tutti", watched: "Visti", watchlist: "Da Vedere",
         note: "Nota Personale", noPlot: "Trama non inserita.",
-        statusWatched: "Visto", statusWatchlist: "Da Vedere", btnLang: "🌐 ENG"
+        statusWatched: "Visto", statusWatchlist: "Da Vedere", btnLang: "🌐 ENG",
+        searchPlaceholder: "Cerca film per titolo...", sortDefault: "Ordine di Aggiunta", sortAlpha: "Alfabetico (A-Z)"
     },
     en: {
         title: "🎬 My Local Cinema", subtitle: "Personal and independent movie archive",
         all: "All", watched: "Watched", watchlist: "Watchlist",
         note: "Personal Note", noPlot: "Plot not added.",
-        statusWatched: "Watched", statusWatchlist: "Watchlist", btnLang: "🌐 ITA"
+        statusWatched: "Watched", statusWatchlist: "Watchlist", btnLang: "🌐 ITA",
+        searchPlaceholder: "Search movies by title...", sortDefault: "Date Added", sortAlpha: "Alphabetical (A-Z)"
     }
 };
 
-// 2. INIZIALIZZAZIONE (Legge solo il file locale)
+// 2. INIZIALIZZAZIONE
 document.addEventListener("DOMContentLoaded", async () => {
     try {
         const response = await fetch('data/movies.json');
@@ -28,12 +32,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateUI();
         renderGrid();
     } catch (e) {
-        console.error("Errore nel caricamento del JSON. Se sei in locale senza server, usa Live Server su VS Code.", e);
+        console.error("Errore nel caricamento del JSON.", e);
         document.getElementById('moviesGrid').innerHTML = "<p style='color:red;'>Errore: Impossibile caricare movies.json.</p>";
     }
 });
 
-// 3. CAMBIO LINGUA E TEMA
+// 3. CAMBIO LINGUA, TEMA, RICERCA E ORDINAMENTO
 function toggleLang() {
     currentLang = currentLang === 'it' ? 'en' : 'it';
     updateUI();
@@ -46,6 +50,16 @@ function toggleTheme() {
     document.getElementById('theme-btn').innerText = currentTheme === 'dark' ? "☀️ Light" : "🌙 Dark";
 }
 
+function handleSearch(event) {
+    searchQuery = event.target.value.toLowerCase();
+    renderGrid();
+}
+
+function handleSort(event) {
+    currentSort = event.target.value;
+    renderGrid();
+}
+
 function updateUI() {
     const t = i18n[currentLang];
     document.getElementById('ui-title').innerText = t.title;
@@ -55,9 +69,14 @@ function updateUI() {
     document.getElementById('btn-watchlist').innerText = t.watchlist;
     document.getElementById('ui-note').innerText = t.note;
     document.getElementById('lang-btn').innerText = t.btnLang;
+    
+    // Traduzioni dei nuovi elementi
+    document.getElementById('search-input').placeholder = t.searchPlaceholder;
+    document.getElementById('opt-default').innerText = t.sortDefault;
+    document.getElementById('opt-alpha').innerText = t.sortAlpha;
 }
 
-// 4. RENDERING GRIGLIA
+// 4. RENDERING GRIGLIA CON FILTRI AVANZATI
 function filterMovies(status) {
     currentFilter = status;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -75,9 +94,33 @@ function renderGrid() {
     grid.innerHTML = '';
     const t = i18n[currentLang];
 
-    const filtered = myMoviesDataset.filter(m => currentFilter === 'all' || m.status === currentFilter);
+    // 1. Filtro per stato (Tutti / Visti / Da vedere)
+    let filtered = myMoviesDataset.filter(m => currentFilter === 'all' || m.status === currentFilter);
 
-    filtered.forEach((movie, index) => {
+    // 2. Filtro per testo (Barra di ricerca)
+    if (searchQuery.trim() !== '') {
+        filtered = filtered.filter(m => {
+            const displayTitle = m.title[currentLang] || m.title['it'];
+            return displayTitle.toLowerCase().includes(searchQuery);
+        });
+    }
+
+    // 3. Ordinamento (Default o Alfabetico)
+    if (currentSort === 'alpha') {
+        filtered.sort((a, b) => {
+            const titleA = a.title[currentLang] || a.title['it'];
+            const titleB = b.title[currentLang] || b.title['it'];
+            return titleA.localeCompare(titleB);
+        });
+    }
+
+    // Generazione delle card
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px;">Nessun film trovato.</div>`;
+        return;
+    }
+
+    filtered.forEach((movie) => {
         const card = document.createElement('div');
         card.className = 'movie-card';
         card.onclick = () => openModal(movie);
@@ -85,12 +128,10 @@ function renderGrid() {
         const displayStatus = movie.status === 'watched' ? t.statusWatched : t.statusWatchlist;
         const displayTitle = movie.title[currentLang] || movie.title['it'];
 
-        // Creazione immediata della card con la foto in locale
         let posterHTML = '';
         if (movie.local_poster) {
             posterHTML = `<img src="${movie.local_poster}" class="poster-img" alt="${displayTitle}">`;
         } else {
-            // Placeholder se l'immagine non è presente nel JSON
             posterHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding-top: 50%;">Nessuna copertina</div>`;
         }
 
@@ -116,7 +157,6 @@ function openModal(movie) {
     const t = i18n[currentLang];
     const displayTitle = movie.title[currentLang] || movie.title['it'];
     
-    // Gestione sicura per evitare errori se mancano commenti o trame
     const displayComment = (movie.comment && movie.comment[currentLang]) ? movie.comment[currentLang] : (movie.comment ? movie.comment['it'] : '');
     const displayPlot = (movie.plot && movie.plot[currentLang]) ? movie.plot[currentLang] : (movie.plot ? movie.plot['it'] : t.noPlot);
 
@@ -125,14 +165,13 @@ function openModal(movie) {
     document.getElementById('modalYear').innerText = `(${movie.year})`;
     document.getElementById('modalRating').innerText = getStarsHTML(movie.rating);
     
-    // Inserimento Immagine Locale nel Modale
     const modalPoster = document.getElementById('modalPoster');
     if (movie.local_poster) {
         modalPoster.src = movie.local_poster;
         modalPoster.style.display = 'block';
     } else {
         modalPoster.src = '';
-        modalPoster.style.display = 'none'; // Nasconde lo spazio vuoto se non c'è foto
+        modalPoster.style.display = 'none';
     }
 
     document.getElementById('modalPlot').innerText = displayPlot;
@@ -145,26 +184,15 @@ function openModal(movie) {
         document.getElementById('modalCommentContainer').style.display = 'none';
     }
 
-    // Inserimento Tags direttamente dal file JSON
     let tagsHTML = '';
-    
-    // Generi (se aggiunti al json come array)
     if (movie.genres && Array.isArray(movie.genres)) {
-        movie.genres.forEach(g => {
-            tagsHTML += `<span class="tag">${g}</span>`;
-        });
+        movie.genres.forEach(g => { tagsHTML += `<span class="tag">${g}</span>`; });
     }
-
-    // Regista
     if (movie.director) {
         tagsHTML += `<span class="tag" style="background-color: var(--accent); color: #fff;">🎬 Regia: ${movie.director}</span>`;
     }
-    
-    // Cast (se aggiunto al json come array)
     if (movie.cast && Array.isArray(movie.cast)) {
-        movie.cast.forEach(actor => {
-            tagsHTML += `<span class="tag" style="background-color: #475569; color: #fff;">🎭 ${actor}</span>`;
-        });
+        movie.cast.forEach(actor => { tagsHTML += `<span class="tag" style="background-color: #475569; color: #fff;">🎭 ${actor}</span>`; });
     }
 
     document.getElementById('modalTags').innerHTML = tagsHTML;
