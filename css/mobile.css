@@ -1,0 +1,32 @@
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    .controls-container {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+    }
+
+    .modal-content {
+        flex-direction: column;
+        max-height: 90vh;
+    }
+
+    .modal-poster {
+        width: 100%;
+        height: 250px;
+        object-position: top;
+    }
+
+    .modal-details {
+        padding: 20px;
+    }
+}
