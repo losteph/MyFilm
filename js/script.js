@@ -162,7 +162,7 @@ function renderGrid() {
 
         let posterHTML = '';
         if (movie.local_poster) {
-            posterHTML = `<img src="${movie.local_poster}" class="poster-img" alt="${displayTitle}">`;
+            posterHTML = `<img src="${movie.local_poster}" class="poster-img" alt="${displayTitle}" loading="lazy">`;
         } else {
             posterHTML = `<div style="color: var(--text-muted); font-size: 12px; text-align: center; padding-top: 50%;">Nessuna copertina</div>`;
         }
@@ -216,18 +216,40 @@ function openModal(movie) {
         document.getElementById('modalCommentContainer').style.display = 'none';
     }
 
-    let tagsHTML = '';
-    if (movie.genres && Array.isArray(movie.genres)) {
-        movie.genres.forEach(g => { tagsHTML += `<span class="tag">${g}</span>`; });
-    }
-    if (movie.director) {
-        tagsHTML += `<span class="tag" style="background-color: var(--accent); color: #fff;">🎬 Regia: ${movie.director}</span>`;
-    }
-    if (movie.cast && Array.isArray(movie.cast)) {
-        movie.cast.forEach(actor => { tagsHTML += `<span class="tag" style="background-color: #475569; color: #fff;">🎭 ${actor}</span>`; });
+    // Svuota le righe precedenti
+    document.getElementById('row-genres').innerHTML = '';
+    document.getElementById('row-director').innerHTML = '';
+    document.getElementById('row-cast').innerHTML = '';
+
+    // 1. Generi
+    if (movie.genres && Array.isArray(movie.genres) && movie.genres.length > 0) {
+        document.getElementById('row-genres').style.display = 'flex';
+        movie.genres.forEach(g => {
+            document.getElementById('row-genres').innerHTML += `<span class="tag">${g}</span>`;
+        });
+    } else {
+        document.getElementById('row-genres').style.display = 'none';
     }
 
-    document.getElementById('modalTags').innerHTML = tagsHTML;
+    // 2. Regista / Registi
+    if (movie.director && movie.director.trim() !== "") {
+        document.getElementById('row-director').style.display = 'flex';
+        // Gestisce sia un singolo regista che più registi separati da virgola
+        const directorLabel = movie.director.includes(',') ? "🎬" : "🎬";
+        document.getElementById('row-director').innerHTML = `<span class="tag" style="background-color: var(--accent); color: #fff;">${directorLabel} ${movie.director}</span>`;
+    } else {
+        document.getElementById('row-director').style.display = 'none';
+    }
+    
+    // 3. Cast Principale
+    if (movie.cast && Array.isArray(movie.cast) && movie.cast.length > 0) {
+        document.getElementById('row-cast').style.display = 'flex';
+        movie.cast.forEach(actor => {
+            document.getElementById('row-cast').innerHTML += `<span class="tag" style="background-color: #475569; color: #fff;">🎭 ${actor}</span>`;
+        });
+    } else {
+        document.getElementById('row-cast').style.display = 'none';
+    }
 }
 
 function closeModal(event) {
