@@ -27,27 +27,6 @@
   },
   {
     "title": {
-      "it": "Cop in Drag",
-      "en": "Cop in Drag"
-    },
-    "year": 1984,
-    "status": "watched",
-    "rating": 0,
-    "local_poster": "img/cop_in_drag_1984.webp",
-    "plot": {
-      "it": "",
-      "en": ""
-    },
-    "director": "",
-    "genres": [],
-    "cast": [],
-    "comment": {
-      "it": "",
-      "en": ""
-    }
-  },
-  {
-    "title": {
       "it": "Batman: Hush",
       "en": "Batman: Hush"
     },
@@ -55,69 +34,6 @@
     "status": "watched",
     "rating": 0,
     "local_poster": "img/batman__hush_2019.webp",
-    "plot": {
-      "it": "",
-      "en": ""
-    },
-    "director": "",
-    "genres": [],
-    "cast": [],
-    "comment": {
-      "it": "",
-      "en": ""
-    }
-  },
-  {
-    "title": {
-      "it": "Aladdin",
-      "en": "Aladdin"
-    },
-    "year": 1993,
-    "status": "watched",
-    "rating": 0,
-    "local_poster": "img/aladdin_1993.webp",
-    "plot": {
-      "it": "",
-      "en": ""
-    },
-    "director": "",
-    "genres": [],
-    "cast": [],
-    "comment": {
-      "it": "",
-      "en": ""
-    }
-  },
-  {
-    "title": {
-      "it": "I Run To You",
-      "en": "I Run To You"
-    },
-    "year": 2022,
-    "status": "watched",
-    "rating": 0,
-    "local_poster": "img/i_run_to_you_2022.webp",
-    "plot": {
-      "it": "",
-      "en": ""
-    },
-    "director": "",
-    "genres": [],
-    "cast": [],
-    "comment": {
-      "it": "",
-      "en": ""
-    }
-  },
-  {
-    "title": {
-      "it": "Odds and evens",
-      "en": "Odds and evens"
-    },
-    "year": 1978,
-    "status": "watched",
-    "rating": 0,
-    "local_poster": "img/odds_and_evens_1978.webp",
     "plot": {
       "it": "",
       "en": ""
