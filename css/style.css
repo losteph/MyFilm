@@ -154,3 +154,30 @@ header {
         flex-direction: column;
     }
 }
+
+
+.modal-meta-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spazio verticale tra le categorie */
+    margin-top: 5px;
+}
+
+.meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Spazio tra i singoli tag della stessa riga */
+    align-items: center;
+}
+
+/* Forziamo uno stile leggermente diverso per far risaltare le sezioni */
+.meta-row::before {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--accent);
+    min-width: 80px; /* Allinea l'inizio dei tag */
+}
+
+#row-genres::before { content: "Generi: "; }
+#row-director::before { content: "Regia: "; }
+#row-cast::before { content: "Cast: "; }
