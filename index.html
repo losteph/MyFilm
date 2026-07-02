@@ -29,6 +29,15 @@
                 <button class="filter-btn" onclick="filterMovies('watched')" id="btn-watched">Visti</button>
                 <button class="filter-btn" onclick="filterMovies('watchlist')" id="btn-watchlist">Da Vedere</button>
             </div>
+
+            <!-- Barra di Ricerca e Ordinamento -->
+            <div class="search-sort-container">
+                <input type="text" id="search-input" placeholder="Cerca film per titolo..." oninput="handleSearch(event)">
+                <select id="sort-select" onchange="handleSort(event)">
+                    <option value="default" id="opt-default">Ordine di Aggiunta</option>
+                    <option value="alpha" id="opt-alpha">Alfabetico (A-Z)</option>
+                </select>
+            </div>
         </div>
     </header>
 
