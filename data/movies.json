@@ -1,0 +1,41 @@
+[
+  {
+    "title": {
+      "it": "Inception",
+      "en": "Inception"
+    },
+    "year": 2010,
+    "status": "watched",
+    "rating": 5,
+    "comment": {
+      "it": "La scena finale mette sempre i brividi.",
+      "en": "The final scene always gives me chills."
+    }
+  },
+  {
+    "title": {
+      "it": "Il Gladiatore",
+      "en": "Gladiator"
+    },
+    "year": 2000,
+    "status": "watched",
+    "rating": 5,
+    "comment": {
+      "it": "Al mio segnale, scatenate l'inferno.",
+      "en": "At my signal, unleash hell."
+    }
+  },
+  {
+    "title": {
+      "it": "Dune - Parte Due",
+      "en": "Dune: Part Two"
+    },
+    "year": 2024,
+    "status": "watchlist",
+    "rating": 0,
+    "comment": {
+      "it": "",
+      "en": ""
+    }
+  }
+]
