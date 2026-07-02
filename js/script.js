@@ -3,24 +3,34 @@ let myMoviesDataset = [];
 let currentFilter = 'all';
 let currentLang = 'it';
 let currentTheme = 'dark';
-let searchQuery = ''; // Cerca per titolo
-let currentSort = 'default'; // Ordinamento: 'default' o 'alpha'
+let searchQuery = ''; 
+let currentSort = 'default'; // Ordinamenti possibili: 'default', 'alpha', 'alpha-desc', 'date-desc', 'date-asc'
 
 // TRADUZIONI INTERFACCIA
 const i18n = {
     it: {
-        title: "🎬 Il Mio Cinema Locale", subtitle: "Archivio film personale e indipendente",
+        title: "🎬 My Movies", subtitle: "Archivio film personale",
         all: "Tutti", watched: "Visti", watchlist: "Da Vedere",
         note: "Nota Personale", noPlot: "Trama non inserita.",
         statusWatched: "Visto", statusWatchlist: "Da Vedere", btnLang: "🌐 ENG",
-        searchPlaceholder: "Cerca film per titolo...", sortDefault: "Ordine di Aggiunta", sortAlpha: "Alfabetico (A-Z)"
+        searchPlaceholder: "Cerca film per titolo...", 
+        sortDefault: "Ordine di Aggiunta", 
+        sortAlpha: "Alfabetico (A-Z)",
+        sortAlphaDesc: "Alfabetico (Z-A)",
+        sortDateDesc: "Più recenti (Anno)",
+        sortDateAsc: "Più datati (Anno)"
     },
     en: {
-        title: "🎬 My Local Cinema", subtitle: "Personal and independent movie archive",
+        title: "🎬 My Films", subtitle: "Personal movie archive",
         all: "All", watched: "Watched", watchlist: "Watchlist",
         note: "Personal Note", noPlot: "Plot not added.",
         statusWatched: "Watched", statusWatchlist: "Watchlist", btnLang: "🌐 ITA",
-        searchPlaceholder: "Search movies by title...", sortDefault: "Date Added", sortAlpha: "Alphabetical (A-Z)"
+        searchPlaceholder: "Search movies by title...", 
+        sortDefault: "Date Added", 
+        sortAlpha: "Alphabetical (A-Z)",
+        sortAlphaDesc: "Alphabetical (Z-A)",
+        sortDateDesc: "Newest First (Year)",
+        sortDateAsc: "Oldest First (Year)"
     }
 };
 
@@ -44,10 +54,14 @@ function toggleLang() {
     renderGrid();
 }
 
+// Nota: se in futuro userai un json estratto con un ordine differente, 
+// questo array mantiene in memoria l'ordine originale di caricamento.
+let originalOrder = [];
+
 function toggleTheme() {
     currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
-    document.getElementById('theme-btn').innerText = currentTheme === 'dark' ? "☀️ Light" : "🌙 Dark";
+    document.getElementById('theme-btn').innerText = currentTheme === 'dark' ? "☀️" : "🌙";
 }
 
 function handleSearch(event) {
@@ -70,10 +84,12 @@ function updateUI() {
     document.getElementById('ui-note').innerText = t.note;
     document.getElementById('lang-btn').innerText = t.btnLang;
     
-    // Traduzioni dei nuovi elementi
     document.getElementById('search-input').placeholder = t.searchPlaceholder;
     document.getElementById('opt-default').innerText = t.sortDefault;
     document.getElementById('opt-alpha').innerText = t.sortAlpha;
+    document.getElementById('opt-alpha-desc').innerText = t.sortAlphaDesc;
+    document.getElementById('opt-date-desc').innerText = t.sortDateDesc;
+    document.getElementById('opt-date-asc').innerText = t.sortDateAsc;
 }
 
 // 4. RENDERING GRIGLIA CON FILTRI AVANZATI
@@ -94,8 +110,12 @@ function renderGrid() {
     grid.innerHTML = '';
     const t = i18n[currentLang];
 
+    // Creiamo una copia profonda del dataset per evitare che l'ordinamento distrugga l'ordine originario del JSON
+    // Aggiungiamo anche un indice 'originalIndex' per poter tornare all'ordine di aggiunta in qualsiasi momento
+    let filtered = myMoviesDataset.map((m, i) => ({ ...m, originalIndex: i }));
+
     // 1. Filtro per stato (Tutti / Visti / Da vedere)
-    let filtered = myMoviesDataset.filter(m => currentFilter === 'all' || m.status === currentFilter);
+    filtered = filtered.filter(m => currentFilter === 'all' || m.status === currentFilter);
 
     // 2. Filtro per testo (Barra di ricerca)
     if (searchQuery.trim() !== '') {
@@ -105,13 +125,25 @@ function renderGrid() {
         });
     }
 
-    // 3. Ordinamento (Default o Alfabetico)
+    // 3. Logica di Ordinamento Multipla
     if (currentSort === 'alpha') {
         filtered.sort((a, b) => {
             const titleA = a.title[currentLang] || a.title['it'];
             const titleB = b.title[currentLang] || b.title['it'];
             return titleA.localeCompare(titleB);
         });
+    } else if (currentSort === 'alpha-desc') {
+        filtered.sort((a, b) => {
+            const titleA = a.title[currentLang] || a.title['it'];
+            const titleB = b.title[currentLang] || b.title['it'];
+            return titleB.localeCompare(titleA); // Invertito rispetto ad alpha
+        });
+    } else if (currentSort === 'date-desc') {
+        filtered.sort((a, b) => b.year - a.year); // Dal più recente al più vecchio
+    } else if (currentSort === 'date-asc') {
+        filtered.sort((a, b) => a.year - b.year); // Dal più vecchio al più recente
+    } else if (currentSort === 'default') {
+        filtered.sort((a, b) => a.originalIndex - b.originalIndex); // Ritorna all'ordine del file JSON
     }
 
     // Generazione delle card
