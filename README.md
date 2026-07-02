@@ -68,7 +68,7 @@ Questo progetto nasce dall'esigenza di avere un backup sicuro e proprietario dei
 ### 🛠 Tecnologie Utilizzate
 
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![CSS3](https://img.shields.io/badge/css-%23663399.svg?style=for-the-badge&logo=css&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23F7DF1E.svg?style=for-the-badge&logo=javascript&logoColor=black)
 
 *   **HTML5 & CSS3:** Struttura semantica e layout responsivo. Utilizza le *CSS Variables* (variabili native) per la gestione istantanea dei temi Dark e Light senza fogli di stile aggiuntivi.
