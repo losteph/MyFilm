@@ -12,8 +12,8 @@
 
     <header>
         <div class="header-left">
-            <h1 id="ui-title">🎬 Il Mio Cinema Locale</h1>
-            <p id="ui-subtitle">Archivio film personale e indipendente</p>
+            <h1 id="ui-title">🎬 My Movies</h1>
+            <p id="ui-subtitle">Archivio film personale</p>
         </div>
         
         <div class="controls-container">
@@ -36,6 +36,9 @@
                 <select id="sort-select" onchange="handleSort(event)">
                     <option value="default" id="opt-default">Ordine di Aggiunta</option>
                     <option value="alpha" id="opt-alpha">Alfabetico (A-Z)</option>
+                    <option value="alpha-desc" id="opt-alpha-desc">Alfabetico (Z-A)</option>
+                    <option value="date-desc" id="opt-date-desc">Più recenti</option>
+                    <option value="date-asc" id="opt-date-asc">Più datati</option>
                 </select>
             </div>
         </div>
