@@ -7,22 +7,21 @@
     "year": 2010,
     "status": "watched",
     "rating": 5,
-    "comment": {
-      "it": "La scena finale mette sempre i brividi.",
-      "en": "The final scene always gives me chills."
-    }
-  },
-  {
-    "title": {
-      "it": "Il Gladiatore",
-      "en": "Gladiator"
+    "local_poster": "img/inception.jpg",
+    "plot": {
+      "it": "Un ladro che ruba segreti aziendali attraverso l'uso della tecnologia di condivisione dei sogni viene incaricato di compiere il percorso inverso.",
+      "en": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
     },
-    "year": 2000,
-    "status": "watched",
-    "rating": 5,
+    "director": "Christopher Nolan",
+    "genres": ["Azione", "Fantascienza", "Thriller"],
+    "cast": [
+      "Leonardo DiCaprio (Cobb)",
+      "Joseph Gordon-Levitt (Arthur)",
+      "Elliot Page (Ariadne)"
+    ],
     "comment": {
-      "it": "Al mio segnale, scatenate l'inferno.",
-      "en": "At my signal, unleash hell."
+      "it": "La scena della trottola finale mette sempre i brividi. Ottimo montaggio sonoro.",
+      "en": "The final spinning top scene always gives me chills. Amazing sound design."
     }
   },
   {
@@ -33,6 +32,18 @@
     "year": 2024,
     "status": "watchlist",
     "rating": 0,
+    "local_poster": "img/dune_part_two.jpg",
+    "plot": {
+      "it": "Paul Atreides si unisce a Chani e ai Fremen mentre cerca vendetta contro i cospiratori che hanno distrutto la sua famiglia.",
+      "en": "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family."
+    },
+    "director": "Denis Villeneuve",
+    "genres": ["Fantascienza", "Avventura"],
+    "cast": [
+      "Timothée Chalamet (Paul Atreides)",
+      "Zendaya (Chani)",
+      "Rebecca Ferguson (Lady Jessica)"
+    ],
     "comment": {
       "it": "",
       "en": ""
