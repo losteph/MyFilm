@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archivio Film</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <h1 id="ui-title">🎬 Il Mio Cinema Locale</h1>
+            <p id="ui-subtitle">Archivio film personale e indipendente</p>
+        </div>
+        
+        <div class="controls-container">
+            <!-- Tasti Lingua e Tema -->
+            <div class="toggles">
+                <button onclick="toggleLang()" id="lang-btn">🇬🇧 ENG</button>
+                <button onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
+            </div>
+            
+            <!-- Filtri -->
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="filterMovies('all')" id="btn-all">Tutti</button>
+                <button class="filter-btn" onclick="filterMovies('watched')" id="btn-watched">Visti</button>
+                <button class="filter-btn" onclick="filterMovies('watchlist')" id="btn-watchlist">Da Vedere</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="movies-grid" id="moviesGrid"></main>
+
+    <!-- Modale Dettaglio Film -->
+    <div class="modal" id="movieModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal(event)">&times;</span>
+            <div class="modal-body">
+                <img src="" alt="Poster" class="modal-poster" id="modalPoster">
+                <div class="modal-details">
+                    <div class="modal-title-row">
+                        <h2 class="modal-title" id="modalTitle">Titolo</h2>
+                        <span class="modal-year" id="modalYear"></span>
+                    </div>
+                    <div id="modalRating" class="stars"></div>
+                    <div class="meta-tags" id="modalTags"></div>
+                    <div class="plot-box" id="modalPlot">Loading...</div>
+                    <div class="comment-box" id="modalCommentContainer">
+                        <h4 id="ui-note">Nota Personale</h4>
+                        <p id="modalComment"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="js/script.js"></script>
+</body>
+</html>
