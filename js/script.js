@@ -84,9 +84,12 @@ function updateUI() {
     const t = i18n[currentLang];
     document.getElementById('ui-title').innerText = t.title;
     document.getElementById('ui-subtitle').innerText = t.subtitle;
-    document.getElementById('btn-all').innerText = t.all;
-    document.getElementById('btn-watched').innerText = t.watched;
-    document.getElementById('btn-watchlist').innerText = t.watchlist;
+    
+    // PUNTIAMO A txt- INVECE DI btn- PER SALVARE I COUNTER DEI FILM
+    if (document.getElementById('txt-all')) document.getElementById('txt-all').innerText = t.all;
+    if (document.getElementById('txt-watched')) document.getElementById('txt-watched').innerText = t.watched;
+    if (document.getElementById('txt-watchlist')) document.getElementById('txt-watchlist').innerText = t.watchlist;
+    
     document.getElementById('ui-note').innerText = t.note;
     document.getElementById('lang-btn').innerText = t.btnLang;
     
@@ -111,10 +114,37 @@ function getStarsHTML(rating) {
     return '⭐'.repeat(rating);
 }
 
+function updateCounters(searchQuery, currentLang) {
+    let baseDataset = myMoviesDataset; // Per i film
+
+    if (searchQuery.trim() !== '') {
+        baseDataset = baseDataset.filter(m => {
+            const displayTitle = m.title[currentLang] || m.title['it'];
+            return displayTitle.toLowerCase().includes(searchQuery);
+        });
+    }
+
+    const all = baseDataset.length;
+    const watchlist = baseDataset.filter(m => m.status === 'watchlist' || m.status === 'da-vedere').length;
+    const watched = baseDataset.filter(m => m.status === 'watched' || m.status === 'visto').length;
+
+    const elAll = document.getElementById('count-all');
+    if (elAll) elAll.innerText = all ? `(${all})` : '(0)';
+
+    const elWatchlist = document.getElementById('count-watchlist');
+    if (elWatchlist) elWatchlist.innerText = watchlist ? `(${watchlist})` : '(0)';
+
+    const elWatched = document.getElementById('count-watched');
+    if (elWatched) elWatched.innerText = watched ? `(${watched})` : '(0)';
+}
+
 function renderGrid() {
     const grid = document.getElementById('moviesGrid');
     grid.innerHTML = '';
     const t = i18n[currentLang];
+
+
+    updateCounters(searchQuery, currentLang);
 
     let filtered = myMoviesDataset.map((m, i) => ({ ...m, originalIndex: i }));
 
