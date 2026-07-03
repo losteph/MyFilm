@@ -18,7 +18,11 @@ const i18n = {
         sortAlpha: "Alfabetico (A-Z)",
         sortAlphaDesc: "Alfabetico (Z-A)",
         sortDateDesc: "Più recenti (Anno)",
-        sortDateAsc: "Più datati (Anno)"
+        sortDateAsc: "Più datati (Anno)",
+        genresLabel: "Generi:",
+        directorLabel: "Regia:",
+        directorsLabel: "Registi:",
+        castLabel: "Cast:"
     },
     en: {
         title: "🎬 My Films", subtitle: "Personal movie archive",
@@ -30,7 +34,11 @@ const i18n = {
         sortAlpha: "Alphabetical (A-Z)",
         sortAlphaDesc: "Alphabetical (Z-A)",
         sortDateDesc: "Newest First (Year)",
-        sortDateAsc: "Oldest First (Year)"
+        sortDateAsc: "Oldest First (Year)",
+        genresLabel: "Genres:",
+        directorLabel: "Director:",
+        directorsLabel: "Directors:",
+        castLabel: "Cast:"
     }
 };
 
@@ -54,8 +62,6 @@ function toggleLang() {
     renderGrid();
 }
 
-// Nota: se in futuro userai un json estratto con un ordine differente, 
-// questo array mantiene in memoria l'ordine originale di caricamento.
 let originalOrder = [];
 
 function toggleTheme() {
@@ -110,14 +116,12 @@ function renderGrid() {
     grid.innerHTML = '';
     const t = i18n[currentLang];
 
-    // Creiamo una copia profonda del dataset per evitare che l'ordinamento distrugga l'ordine originario del JSON
-    // Aggiungiamo anche un indice 'originalIndex' per poter tornare all'ordine di aggiunta in qualsiasi momento
     let filtered = myMoviesDataset.map((m, i) => ({ ...m, originalIndex: i }));
 
-    // 1. Filtro per stato (Tutti / Visti / Da vedere)
-    filtered = filtered.filter(m => currentFilter === 'all' || m.status === currentFilter);
+    if (currentFilter !== 'all') {
+        filtered = filtered.filter(m => m.status === currentFilter);
+    }
 
-    // 2. Filtro per testo (Barra di ricerca)
     if (searchQuery.trim() !== '') {
         filtered = filtered.filter(m => {
             const displayTitle = m.title[currentLang] || m.title['it'];
@@ -125,7 +129,6 @@ function renderGrid() {
         });
     }
 
-    // 3. Logica di Ordinamento Multipla
     if (currentSort === 'alpha') {
         filtered.sort((a, b) => {
             const titleA = a.title[currentLang] || a.title['it'];
@@ -136,17 +139,16 @@ function renderGrid() {
         filtered.sort((a, b) => {
             const titleA = a.title[currentLang] || a.title['it'];
             const titleB = b.title[currentLang] || b.title['it'];
-            return titleB.localeCompare(titleA); // Invertito rispetto ad alpha
+            return titleB.localeCompare(titleA);
         });
     } else if (currentSort === 'date-desc') {
-        filtered.sort((a, b) => b.year - a.year); // Dal più recente al più vecchio
+        filtered.sort((a, b) => b.year - a.year);
     } else if (currentSort === 'date-asc') {
-        filtered.sort((a, b) => a.year - b.year); // Dal più vecchio al più recente
+        filtered.sort((a, b) => a.year - b.year);
     } else if (currentSort === 'default') {
-        filtered.sort((a, b) => a.originalIndex - b.originalIndex); // Ritorna all'ordine del file JSON
+        filtered.sort((a, b) => a.originalIndex - b.originalIndex);
     }
 
-    // Generazione delle card
     if (filtered.length === 0) {
         grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 50px;">Nessun film trovato.</div>`;
         return;
@@ -207,48 +209,57 @@ function openModal(movie) {
     }
 
     document.getElementById('modalPlot').innerText = displayPlot;
-    document.getElementById('modalTags').innerHTML = '';
     
-    if (displayComment) {
+    // Fix definitivo Nota Personale (se "" o null o undefined nasconde il box)
+    if (displayComment && displayComment.trim() !== "") {
         document.getElementById('modalCommentContainer').style.display = 'block';
         document.getElementById('modalComment').innerText = displayComment;
     } else {
         document.getElementById('modalCommentContainer').style.display = 'none';
     }
 
-    // Svuota le righe precedenti
-    document.getElementById('row-genres').innerHTML = '';
-    document.getElementById('row-director').innerHTML = '';
-    document.getElementById('row-cast').innerHTML = '';
+    // Gestione sezioni dinamiche per evitare bug visivi
+    const rowGenres = document.getElementById('row-genres');
+    const rowDirector = document.getElementById('row-director');
+    const rowCast = document.getElementById('row-cast');
 
-    // 1. Generi
-    if (movie.genres && Array.isArray(movie.genres) && movie.genres.length > 0) {
-        document.getElementById('row-genres').style.display = 'flex';
-        movie.genres.forEach(g => {
-            document.getElementById('row-genres').innerHTML += `<span class="tag">${g}</span>`;
-        });
-    } else {
-        document.getElementById('row-genres').style.display = 'none';
+    if (rowGenres) {
+        rowGenres.innerHTML = '';
+        if (movie.genres && Array.isArray(movie.genres) && movie.genres.length > 0) {
+            rowGenres.style.display = 'flex';
+            rowGenres.innerHTML = `<strong style="color: var(--accent); min-width: 80px;">${t.genresLabel}</strong>`;
+            movie.genres.forEach(g => {
+                rowGenres.innerHTML += `<span class="tag">${g}</span>`;
+            });
+        } else {
+            rowGenres.style.display = 'none';
+        }
     }
 
-    // 2. Regista / Registi
-    if (movie.director && movie.director.trim() !== "") {
-        document.getElementById('row-director').style.display = 'flex';
-        // Gestisce sia un singolo regista che più registi separati da virgola
-        const directorLabel = movie.director.includes(',') ? "🎬" : "🎬";
-        document.getElementById('row-director').innerHTML = `<span class="tag" style="background-color: var(--accent); color: #fff;">${directorLabel} ${movie.director}</span>`;
-    } else {
-        document.getElementById('row-director').style.display = 'none';
+    if (rowDirector) {
+        rowDirector.innerHTML = '';
+        if (movie.director && movie.director.trim() !== "") {
+            rowDirector.style.display = 'flex';
+            const isMultiple = movie.director.includes(',');
+            const labelText = isMultiple ? t.directorsLabel : t.directorLabel;
+            rowDirector.innerHTML = `<strong style="color: var(--accent); min-width: 80px;">${labelText}</strong>`;
+            rowDirector.innerHTML += `<span class="tag" style="background-color: var(--accent); color: #fff;">🎬 ${movie.director}</span>`;
+        } else {
+            rowDirector.style.display = 'none';
+        }
     }
     
-    // 3. Cast Principale
-    if (movie.cast && Array.isArray(movie.cast) && movie.cast.length > 0) {
-        document.getElementById('row-cast').style.display = 'flex';
-        movie.cast.forEach(actor => {
-            document.getElementById('row-cast').innerHTML += `<span class="tag" style="background-color: #475569; color: #fff;">🎭 ${actor}</span>`;
-        });
-    } else {
-        document.getElementById('row-cast').style.display = 'none';
+    if (rowCast) {
+        rowCast.innerHTML = '';
+        if (movie.cast && Array.isArray(movie.cast) && movie.cast.length > 0) {
+            rowCast.style.display = 'flex';
+            rowCast.innerHTML = `<strong style="color: var(--accent); min-width: 80px;">${t.castLabel}</strong>`;
+            movie.cast.forEach(actor => {
+                rowCast.innerHTML += `<span class="tag" style="background-color: #475569; color: #fff;">🎭 ${actor}</span>`;
+            });
+        } else {
+            rowCast.style.display = 'none';
+        }
     }
 }
 

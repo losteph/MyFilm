@@ -1,32 +1,39 @@
 @media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
-    }
-    
-    .controls-container {
-        align-items: flex-start;
-        width: 100%;
-    }
-
-    .movies-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 15px;
-    }
-
-    .modal-content {
+    /* Cambia la disposizione da orizzontale a verticale */
+    .modal-body {
         flex-direction: column;
         max-height: 90vh;
     }
 
-    .modal-poster {
-        width: 100%;
-        height: 250px;
-        object-position: top;
+    .modal-content {
+        max-height: 90vh;
     }
 
+    /* La locandina si adatta in alto a schermo intero */
+    .modal-poster {
+        width: 100%;
+        min-width: 100%;
+        height: 280px; /* Altezza fissa della foto su mobile per lasciare spazio ai testi sotto */
+        object-fit: cover;
+    }
+
+    /* I dettagli sotto la locandina riprendono lo scroll */
     .modal-details {
         padding: 20px;
+        overflow-y: auto;
+    }
+
+    /* Rendiamo la X più visibile su mobile applicando un piccolo sfondo scuro protettivo */
+    .close-btn {
+        background-color: rgba(15, 23, 42, 0.6);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
     }
 }
